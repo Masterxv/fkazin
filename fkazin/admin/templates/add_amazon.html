@@ -1,0 +1,151 @@
+{% extends 'admin_home.html' %}
+{% load static%}
+{% block content %}
+    <script>
+        function openaz(){
+            azwin = window.open("https://www.amazon.in/", '_blank');
+        }
+    </script>
+    <div><b>Add Amazon Product</b></div>
+
+    <table width="100%" style="border: 1px solid black">
+        <tr>
+            <td>
+                Product ID
+            </td>
+            <td>
+                <input type="text" name="pid" id="pid" value="{{ data.pid }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Link
+            </td>
+            <td>
+                <input type="text" name="link" style="width:80%" value="{{ data.link }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Product Name
+            </td>
+            <td>
+                <input type="text" name="name" style="width:80%" value="{{ data.name }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Description
+            </td>
+            <td>
+                <textarea name="description" rows="10" cols="50">{{ data.description }}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Brand
+            </td>
+            <td>
+                <input type="text" name="brand" style="width:80%" value="{{ data.brand }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Selling Price
+            </td>
+            <td>
+                <input type="text" name="selling_price" value="{{ data.selling_price }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Actual Price
+            </td>
+            <td>
+                <input type="text" name="actual_price" value="{{ data.actual_price }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Small Image
+            </td>
+            <td>
+                <input type="text" name="image_small" style="width:80%" value="{{ data.images }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Medium Image
+            </td>
+            <td>
+                <input type="text" name="image_medium" style="width:80%" value="{{ data.images }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Large Image
+            </td>
+            <td>
+                <input type="text" name="image_large" style="width:80%" value="{{ data.images }}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Category
+            </td>
+            <td>
+                <select name="category">
+                    <option value=""></option>
+                    {% for row in categories %}
+                        <option value="{{row.category_id}}">{{row.name}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit">Submit</button>
+            </td>
+        </tr>
+    </table>
+    <script>
+        $(document).ready(function(){
+
+        });
+
+        function try_az(){
+            console.log(document.getElementById("feature-bullets").firstElementChild.firstElementChild.firstElementChild.textContent);
+            console.log(document.getElementById("productTitle").textContent.trim());
+            console.log(document.getElementById("priceblock_ourprice").textContent);
+            console.log(document.getElementsByClassName("priceBlockStrikePriceString")[0].textContent);
+            console.log(window.location.href);
+            console.log(document.getElementById("bylineInfo").text);
+            console.log(document.getElementById("imgTagWrapperId").firstElementChild.src);
+        }
+
+        function try_fk(){
+            pid = document.getElementById('pid').value;
+
+            $.get( "./fk-product-by-id?pid="+pid, function( data ) {
+                console.log(data);
+                  if('pid' in data){
+                    $("[name='pid']").val(data.pid);
+                    $("[name='actual_price']").val(data.actual_price);
+                    $("[name='brand']").val(data.brand);
+                    $("[name='description']").val(data.description);
+                    $("[name='image_large']").val(data.image_large);
+                    $("[name='image_medium']").val(data.image_medium);
+                    $("[name='image_small']").val(data.image_small);
+                    $("[name='link']").val(data.link);
+                    $("[name='name']").val(data.name);
+                    $("[name='selling_price']").val(data.selling_price);
+                  }
+                  else{
+                    alert("Some Error: Try adding manually");
+                  }
+            }).fail(function() {
+                alert("Some Error: Try adding manually");
+            });
+        }
+    </script>
+{% endblock %}

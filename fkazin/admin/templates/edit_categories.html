@@ -1,0 +1,107 @@
+{% extends 'admin_home.html' %}
+{% load static%}
+{% block content %}
+    <div><b>Edit Categories</b></div>
+    <table width="100%" border="1">
+        <tr>
+            <th>Category ID</th>
+            <th>Name</th>
+            <th>Active</th>
+            <th>Parent</th>
+        </tr>
+        <tr>
+            <form name="add_cat" method="post" action="add-category">
+                {% csrf_token %}
+                <td>
+
+                </td>
+                <td>
+                    <input type="text" name="name" style="width:80%" value="">
+                </td>
+                <td>
+                    <select name="active">
+                        <option value="0"></option>
+                        <option value="1" >Yes</option>
+                        <option value="0" >No</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="parent">
+                        <option value=""></option>
+                        {% for cat in categories %}
+                            {% if cat.category_id != row.category_id %}
+                                <option value="{{cat.category_id}}" >{{cat.name}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <button type="submit">Add</button>
+                </td>
+            </form>
+        </tr>
+        {% for row in categories %}
+            <tr>
+                <form name="edit_cat" method="post" action="update-category">
+                <td>
+                    {{row.category_id}}
+                    <input type="hidden" name="category_id" value="{{row.category_id}}">
+                </td>
+                <td>
+                    <input type="text" name="name" style="width:80%" value="{{row.name}}">
+                </td>
+                <td>
+                    <select name="active">
+                        <option value="0"></option>
+                        <option value="1" {% if row.active == 1 %} selected {% endif %}>Yes</option>
+                        <option value="0" {% if row.active == 0 %} selected {% endif %}>No</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="parent">
+                        <option value=""></option>
+                        {% for cat in categories %}
+                            {% if cat.category_id != row.category_id and cat.parent is None %}
+                                <option value="{{cat.category_id}}" {% if cat.category_id == row.parent %} selected {% endif %}>{{cat.name}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <button type="button">Update</button>
+                </td>
+                </form>
+            </tr>
+        {% endfor %}
+    </table>
+    <script>
+        $(document).ready(function(){
+
+        });
+
+        function try_fk(){
+            pid = document.getElementById('pid').value;
+
+            $.get( "./fk-product-by-id?pid="+pid, function( data ) {
+                console.log(data);
+                  if('pid' in data){
+                    $("[name='pid']").val(data.pid);
+                    $("[name='actual_price']").val(data.actual_price);
+                    $("[name='brand']").val(data.brand);
+                    $("[name='description']").val(data.description);
+                    $("[name='image_large']").val(data.image_large);
+                    $("[name='image_medium']").val(data.image_medium);
+                    $("[name='image_small']").val(data.image_small);
+                    $("[name='link']").val(data.link);
+                    $("[name='name']").val(data.name);
+                    $("[name='selling_price']").val(data.selling_price);
+                  }
+                  else{
+                    alert("Some Error: Try adding manually");
+                  }
+            }).fail(function() {
+                alert("Some Error: Try adding manually");
+            });
+        }
+    </script>
+{% endblock %}
